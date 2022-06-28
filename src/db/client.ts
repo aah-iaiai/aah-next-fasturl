@@ -1,9 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 
 declare global {
   // allow global `var` declarations
   // eslint-disable-next-line no-var
-  var prisma: PrismaClient | undefined;
+  var prisma:
+    | PrismaClient<Prisma.PrismaClientOptions, "info" | "warn" | "error" | "query">
+    | undefined;
 }
 
 export const prisma =
