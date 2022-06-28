@@ -1,47 +1,47 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { NextApiRequest, NextApiResponse } from "next";
+
 import { prisma } from "../../../db/client";
-import type { NextApiRequest, NextApiResponse } from "next";
 
-type Data = {
-  message: string;
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  const slug = req.query["slug"];
+
+
+  console.log("?? query:slug", slug);
+
+  if (!slug || typeof slug !== "string") {
+    res.statusCode = 404;
+
+    res.send(JSON.stringify({ message: "pls use with a slug" }));
+
+    return;
+  }
+
+  console.log("?? query:slug", slug);
+
+  const data = await prisma.shortLink.findFirst({
+    where: {
+      slug: {
+        equals: slug,
+      },
+    },
+  });
+
+  console.log("?? query:data", data);
+
+  if (!data) {
+    res.statusCode = 404;
+
+    res.send(JSON.stringify({ message: "slug not found" }));
+
+    return;
+  }
+
+  res.setHeader("Content-Type", "application/json");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Cache-Control",
+    "s-maxage=1000000000, stale-while-revalidate"
+  );
+
+  return res.json(data);
 };
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  
-    const slug = req.query["slug"];
-
-    if(!slug || typeof slug !== "string") {
-      res.status(404).json({ message: "please use with a slug" });
-      return
-    }
-
-    console.log("?? api:slug", {slug});
-
-    const data = await prisma.shortLink.findFirst({
-        where: {
-            slug: {
-                equals: slug
-            }
-        }
-    })
-
-    if(!data) {
-       res.statusCode = 404;
-
-       res.send(JSON.stringify({ message: "slug not found" }));
-
-       return;
-    }
-
-    res.setHeader("Content-Type", "application/json");
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-      "Cache-Control",
-      "s-maxage=1000000000, stale-while-revalidate"
-    );
-
-    return res.json(data);
-}
