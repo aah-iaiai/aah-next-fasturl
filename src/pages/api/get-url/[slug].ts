@@ -18,7 +18,7 @@ export default async function handler(
       return
     }
 
-    console.log({slug});
+    console.log("?? slug", {slug});
 
     const data = await prisma.shortLink.findFirst({
         where: {
