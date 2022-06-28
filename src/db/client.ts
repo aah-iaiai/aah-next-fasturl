@@ -1,10 +1,13 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, Prisma as PrismaType } from "@prisma/client";
 
 declare global {
   // allow global `var` declarations
   // eslint-disable-next-line no-var
   var prisma:
-    | PrismaClient<Prisma.PrismaClientOptions, "info" | "warn" | "error" | "query">
+    | PrismaClient<
+        PrismaType.PrismaClientOptions,
+        "info" | "warn" | "error" | "query"
+      >
     | undefined;
 }
 
