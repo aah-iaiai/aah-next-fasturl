@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { prisma } from "../../db/client";
+import { prisma } from "../../../db/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
@@ -8,7 +8,7 @@ type Data = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
   
     const slug = req.query["slug"];
@@ -29,9 +29,19 @@ export default async function handler(
     })
 
     if(!data) {
-       res.status(404).json({ message: "slug not found" });
+       res.statusCode = 404;
+
+       res.send(JSON.stringify({ message: "slug not found" }));
+
        return;
     }
 
-    return res.redirect(data.url);
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+      "Cache-Control",
+      "s-maxage=1000000000, stale-while-revalidate"
+    );
+
+    return res.json(data);
 }
