@@ -32,13 +32,18 @@ if (process.env.NODE_ENV !== "production") global.prisma = prisma;
 
 
 prisma.$on("warn", (e) => {
-  console.log(e);
+  console.log("PRISMA: ", e);
 });
 
+prisma.$on("query", (e) => {
+ console.log("PRISMA: ", e);
+});
+
+
 prisma.$on("info", (e) => {
-  console.log(e);
+  console.log("PRISMA: ", e);
 });
 
 prisma.$on("error", (e) => {
-  console.log(e);
+  console.log("PRISMA: ", e);
 });
